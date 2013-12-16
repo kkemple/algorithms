@@ -2,7 +2,12 @@
   var Union;
 
   Union = function() {
-    var i;
+    this.init();
+    return this;
+  };
+
+  Union.prototype.init = function() {
+    var height, i, width;
     this.data = [];
     this.links = [];
     i = 0;
@@ -13,7 +18,7 @@
         children: [],
         link: i,
         hasParent: false,
-        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16).replace('o', '0')
       });
       this.links.push({
         source: i,
@@ -22,12 +27,6 @@
       });
       ++i;
     }
-    this.init();
-    return this;
-  };
-
-  Union.prototype.init = function() {
-    var height, width;
     width = $('#tree-graph').width();
     height = 400;
     this.force = d3.layout.force().charge(-60).linkDistance(25).size([width, height]);
@@ -49,8 +48,9 @@
   Union.prototype.getUnique = function() {
     var prevIndexes, unique;
     prevIndexes = [];
-    unique = Math.floor(Math.random() * this.data.length);
+    unique = Math.floor(Math.random() * (this.data.length + 1));
     if (!(_.indexOf(prevIndexes, unique) > 0)) {
+      prevIndexes.push(unique);
       return unique;
     } else {
       return this.getUnique();
@@ -77,12 +77,7 @@
       });
     });
     $('.auto').on('click', function(e) {
-      var id1, id2, node1, node2;
-      id1 = self.getUnique();
-      id2 = self.getUnique();
-      node1 = self.getNode('id', id1);
-      node2 = self.getNode('id', id2);
-      self.union(node1, node2);
+      self.auto();
       return e.preventDefault();
     });
     return $('.join').on('click', function(e) {
@@ -176,6 +171,26 @@
 
   Union.prototype.connected = function(node1, node2) {
     return this.root(node1) === this.root(node2);
+  };
+
+  Union.prototype.uniqueUnion = function() {
+    var id1, id2, node1, node2;
+    id1 = this.getUnique();
+    id2 = this.getUnique();
+    node1 = this.getNode('id', id1);
+    node2 = this.getNode('id', id2);
+    return this.union(node1, node2);
+  };
+
+  Union.prototype.auto = function() {
+    var i, loops;
+    loops = Math.floor(Math.random() * this.data.length);
+    i = 0;
+    while (i < loops) {
+      this.uniqueUnion();
+      ++i;
+    }
+    return false;
   };
 
   window.u = new Union;

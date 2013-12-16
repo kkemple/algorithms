@@ -1,6 +1,12 @@
 Union = () ->
+
+    @init()
+    return @
+
+Union::init = () ->
     @data = []
     @links = []
+
     i = 0
     while i < 100
         @data.push
@@ -9,7 +15,7 @@ Union = () ->
             children: []
             link: i
             hasParent: false
-            color: '#'+Math.floor(Math.random()*16777215).toString(16) 
+            color: '#'+Math.floor(Math.random()*16777215).toString(16).replace('o', '0')
 
         @links.push
             source: i
@@ -17,10 +23,7 @@ Union = () ->
             value: 5
         ++i
 
-    @init()
-    return @
 
-Union::init = () ->
     width = $('#tree-graph').width()
     height = 400
 
@@ -61,9 +64,10 @@ Union::init = () ->
 Union::getUnique = () ->
     prevIndexes = []
 
-    unique = Math.floor( Math.random() * @data.length )
+    unique = Math.floor( Math.random() * ( @data.length + 1 ) )
 
     unless _.indexOf( prevIndexes, unique ) > 0
+        prevIndexes.push unique
         return unique
     else
         return @getUnique()
@@ -83,11 +87,7 @@ Union::events = () ->
                 .attr("cy", (d) -> return d.y )
 
     $('.auto').on 'click', (e) ->
-            id1 = self.getUnique()
-            id2 = self.getUnique()
-            node1 = self.getNode( 'id', id1 )
-            node2 = self.getNode( 'id', id2 )
-            self.union( node1, node2 )
+            self.auto()
             e.preventDefault()
 
     $('.join').on 'click', (e) ->
@@ -170,6 +170,21 @@ Union::getNode = ( key, value ) ->
 
 Union::connected = ( node1, node2 ) ->
     return @root( node1 ) == @root( node2 )
+
+Union::uniqueUnion = () ->
+    id1 = @getUnique()
+    id2 = @getUnique()
+    node1 = @getNode( 'id', id1 )
+    node2 = @getNode( 'id', id2 )
+    @union( node1, node2 )
+
+Union::auto = () ->
+    loops = Math.floor( Math.random() * @data.length )
+    i = 0
+    while i < loops
+        @uniqueUnion()
+        ++i
+    return false
     
 
 window.u = new Union
