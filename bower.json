@@ -1,0 +1,35 @@
+{
+  "name": "algorithms",
+  "version": "0.1.0",
+  "authors": [
+    "Kurtis Kemple <kurtiskemple@gmail.com>"
+  ],
+  "description": "A repository of JavaScript solutions to common algorithms, strictly for self learning purposes",
+  "main": "index.html",
+  "keywords": [
+    "algorithms",
+    "computer",
+    "science",
+    "data",
+    "structures",
+    "javascript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/kkemple/algorithms",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.3",
+    "lodash": "~2.4.1",
+    "bootstrap": "~3.0.3",
+    "backbone": "*",
+    "marionette": "*",
+    "d3": "*"
+  }
+}

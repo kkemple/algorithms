@@ -1,0 +1,16 @@
+body {
+  font-size: 13px/1.5;
+}
+
+header.main {
+  margin-top: 40px;
+}
+
+#test-view > div {
+  display: none;
+}
+
+#data-connectivity #tree-graph {
+  width: 100%;
+  height: 400px;
+}

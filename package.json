@@ -1,0 +1,34 @@
+{
+  "name": "algorithms",
+  "version": "0.1.0",
+  "description": "A repository of JavaScript solutions to common algorithms, strictly for self learning purposes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kkemple/algorithms"
+  },
+  "keywords": [
+    "javascript",
+    "data",
+    "structures",
+    "algorithms",
+    "computer",
+    "science"
+  ],
+  "author": "Kurtis Kemple",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/kkemple/algorithms/issues"
+  },
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-sass": "~0.5.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-stripcomments": "~0.1.0"
+  }
+}
