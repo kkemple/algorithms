@@ -23,3 +23,7 @@ header.main {
   stroke: #999999;
   stroke-opacity: 0.6;
 }
+#trees #joins,
+#trees #attempted-joins {
+  padding-left: 10px;
+}

@@ -7,6 +7,8 @@ Union::init = () ->
     @data = []
     @links = []
     @num = 60
+    @joins = 0
+    @attemptedJoins = 0
 
     i = 0
     while i < @num
@@ -75,6 +77,7 @@ Union::getUnique = () ->
 
 Union::events = () ->
     self = @
+    evt = App.Util.Events
 
     @force.on "tick", () ->
             self.link
@@ -99,6 +102,12 @@ Union::events = () ->
             self.union(  node1,  node2 )
             e.preventDefault()
 
+    evt.on 'successful:join', () ->
+        $('#joins').find('span').text ++self.joins
+
+    evt.on 'unsuccessful:join', () ->
+        $('#attempted-joins').find('span').text ++self.attemptedJoins
+
 Union::root = ( node ) ->
     self = @
 
@@ -110,6 +119,8 @@ Union::root = ( node ) ->
 
 Union::union = ( node1, node2 ) ->
     self = @
+    evt = App.Util.Events
+
     unless @connected node1, node2
         root1 = @root( node1 )
         root2 = @root( node2 )
@@ -140,9 +151,10 @@ Union::union = ( node1, node2 ) ->
         @force.nodes(u.data)
         @force.start()
 
+        evt.trigger 'successful:join'
         return parent
     else
-        return console.log 'Already connected' 
+        return evt.trigger 'unsuccessful:join' 
 
 Union::setColors = (node, color) ->
     self = @

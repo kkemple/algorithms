@@ -11,6 +11,8 @@
     this.data = [];
     this.links = [];
     this.num = 60;
+    this.joins = 0;
+    this.attemptedJoins = 0;
     i = 0;
     while (i < this.num) {
       this.data.push({
@@ -59,8 +61,9 @@
   };
 
   Union.prototype.events = function() {
-    var self;
+    var evt, self;
     self = this;
+    evt = App.Util.Events;
     this.force.on("tick", function() {
       self.link.attr("x1", function(d) {
         return d.source.x;
@@ -81,7 +84,7 @@
       self.auto();
       return e.preventDefault();
     });
-    return $('.join').on('click', function(e) {
+    $('.join').on('click', function(e) {
       var node1, node2, selector1, selector2;
       selector1 = parseInt($('#num1').val(), 10);
       selector2 = parseInt($('#num2').val(), 10);
@@ -89,6 +92,12 @@
       node2 = self.getNode('id', selector2);
       self.union(node1, node2);
       return e.preventDefault();
+    });
+    evt.on('successful:join', function() {
+      return $('#joins').find('span').text(++self.joins);
+    });
+    return evt.on('unsuccessful:join', function() {
+      return $('#attempted-joins').find('span').text(++self.attemptedJoins);
     });
   };
 
@@ -103,8 +112,9 @@
   };
 
   Union.prototype.union = function(node1, node2) {
-    var child, parent, root1, root2, self, weight1, weight2;
+    var child, evt, parent, root1, root2, self, weight1, weight2;
     self = this;
+    evt = App.Util.Events;
     if (!this.connected(node1, node2)) {
       root1 = this.root(node1);
       root2 = this.root(node2);
@@ -130,9 +140,10 @@
       });
       this.force.nodes(u.data);
       this.force.start();
+      evt.trigger('successful:join');
       return parent;
     } else {
-      return console.log('Already connected');
+      return evt.trigger('unsuccessful:join');
     }
   };
 
