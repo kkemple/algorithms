@@ -6,9 +6,10 @@ Union = () ->
 Union::init = () ->
     @data = []
     @links = []
+    @num = 60
 
     i = 0
-    while i < 100
+    while i < @num
         @data.push
             id: i + 1
             parent: i + 1
@@ -20,7 +21,7 @@ Union::init = () ->
         @links.push
             source: i
             target: i
-            value: 5
+            value: 3
         ++i
 
 
@@ -28,7 +29,7 @@ Union::init = () ->
     height = 400
 
     @force = d3.layout.force()
-                    .charge(-60)
+                    .charge(-@num)
                     .linkDistance(25)
                     .size([width, height])
 
@@ -179,11 +180,18 @@ Union::uniqueUnion = () ->
     @union( node1, node2 )
 
 Union::auto = () ->
+    self = @
     loops = Math.floor( Math.random() * @data.length )
-    i = 0
-    while i < loops
-        @uniqueUnion()
-        ++i
+    loopID = 0
+
+    loopID = setInterval ->
+        self.uniqueUnion()
+        loops--
+        if loops == 0
+            clearInterval( loopID )
+    , 200
+
+
     return false
     
 

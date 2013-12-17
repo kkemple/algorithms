@@ -10,8 +10,9 @@
     var height, i, width;
     this.data = [];
     this.links = [];
+    this.num = 60;
     i = 0;
-    while (i < 100) {
+    while (i < this.num) {
       this.data.push({
         id: i + 1,
         parent: i + 1,
@@ -23,13 +24,13 @@
       this.links.push({
         source: i,
         target: i,
-        value: 5
+        value: 3
       });
       ++i;
     }
     width = $('#tree-graph').width();
     height = 400;
-    this.force = d3.layout.force().charge(-60).linkDistance(25).size([width, height]);
+    this.force = d3.layout.force().charge(-this.num).linkDistance(25).size([width, height]);
     this.svg = d3.select('#tree-graph').append('svg').attr('width', width).attr('height', height);
     this.force.nodes(this.data).links(this.links).start();
     this.link = this.svg.selectAll(".link").data(this.links).enter().append("line").attr("class", "link").style("stroke-width", function(d) {
@@ -183,13 +184,17 @@
   };
 
   Union.prototype.auto = function() {
-    var i, loops;
+    var loopID, loops, self;
+    self = this;
     loops = Math.floor(Math.random() * this.data.length);
-    i = 0;
-    while (i < loops) {
-      this.uniqueUnion();
-      ++i;
-    }
+    loopID = 0;
+    loopID = setInterval(function() {
+      self.uniqueUnion();
+      loops--;
+      if (loops === 0) {
+        return clearInterval(loopID);
+      }
+    }, 200);
     return false;
   };
 
