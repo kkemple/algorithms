@@ -70,6 +70,8 @@
                     <span id="attempted-joins">Attempted Joins: <span>0</span></span>
                   </div>
                   <p>This is an example of a <b>weighted union tree</b> structure. As connections are created the smaller forests are added to the larger forests giving a short, fat tree structure. This greatly reduces the amount of levels that need to be traversed when searching for nodes.</p>
+                  <p>A successful join is measured by two unconnected nodes being joined at their roots. An attempted join means that the join was not possible because the nodes are already connected.</p>
+                  <p>The <b>Auto</b> button will run a random number of joins by choosing two random nodes to join. Otherwise you can add numbers to the two input fields and join them yourself. There 60 nodes available.</p>
                 </div>
                 <div class="col-sm-8">
                   <div id="tree-graph"></div>

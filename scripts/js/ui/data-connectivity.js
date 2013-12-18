@@ -48,18 +48,6 @@
     return this.events();
   };
 
-  Union.prototype.getUnique = function() {
-    var prevIndexes, unique;
-    prevIndexes = [];
-    unique = Math.floor(Math.random() * (this.data.length + 1));
-    if (!(_.indexOf(prevIndexes, unique) > 0)) {
-      prevIndexes.push(unique);
-      return unique;
-    } else {
-      return this.getUnique();
-    }
-  };
-
   Union.prototype.events = function() {
     var evt, self;
     self = this;
@@ -99,6 +87,18 @@
     return evt.on('unsuccessful:join', function() {
       return $('#attempted-joins').find('span').text(++self.attemptedJoins);
     });
+  };
+
+  Union.prototype.getUnique = function() {
+    var prevIndexes, unique;
+    prevIndexes = [];
+    unique = Math.floor(Math.random() * (this.data.length + 1));
+    if (!(_.indexOf(prevIndexes, unique) > 0)) {
+      prevIndexes.push(unique);
+      return unique;
+    } else {
+      return this.getUnique();
+    }
   };
 
   Union.prototype.root = function(node) {
@@ -195,15 +195,15 @@
   };
 
   Union.prototype.auto = function() {
-    var loopID, loops, self;
+    var loops, self;
     self = this;
     loops = Math.floor(Math.random() * this.data.length);
-    loopID = 0;
-    loopID = setInterval(function() {
+    clearInterval(this.loopID);
+    this.loopID = setInterval(function() {
       self.uniqueUnion();
       loops--;
       if (loops === 0) {
-        return clearInterval(loopID);
+        return clearInterval(self.loopID);
       }
     }, 200);
     return false;

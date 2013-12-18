@@ -1,5 +1,4 @@
 Union = () ->
-
     @init()
     return @
 
@@ -10,6 +9,7 @@ Union::init = () ->
     @joins = 0
     @attemptedJoins = 0
 
+    # build our test nodes and links
     i = 0
     while i < @num
         @data.push
@@ -26,24 +26,28 @@ Union::init = () ->
             value: 3
         ++i
 
-
+    # set the defualt sizes for the graph
     width = $('#tree-graph').width()
     height = 400
 
+    # construct the D3 force layout
     @force = d3.layout.force()
-                    .charge(-@num)
-                    .linkDistance(25)
+                    .charge(-@num) # set charge ( or push of nodes ) equal to number of nodes
+                    .linkDistance(25) # lenght of the connector lines
                     .size([width, height])
 
+    # construct the svg element
     @svg = d3.select('#tree-graph').append('svg')
                     .attr('width', width)
                     .attr('height', height)
 
+    # start up the force layout
     @force
-        .nodes( @data )
-        .links( @links )
+        .nodes( @data ) # add nodes to layout
+        .links( @links ) # add links to layout
         .start()
 
+    # build each link
     @link = @svg.selectAll(".link")
                 .data( @links )
                 .enter()
@@ -51,6 +55,7 @@ Union::init = () ->
                 .attr("class", "link")
                 .style("stroke-width", (d) -> return Math.sqrt( d.value ) )
 
+    # build each node
     @node = @svg.selectAll( ".node" )
                     .data( @data )
                     .enter()
@@ -62,23 +67,14 @@ Union::init = () ->
                     .style("fill", (d) -> return d.color )
                     .call(@force.drag)
 
+    # kick off the events for the class
     @events()
-
-Union::getUnique = () ->
-    prevIndexes = []
-
-    unique = Math.floor( Math.random() * ( @data.length + 1 ) )
-
-    unless _.indexOf( prevIndexes, unique ) > 0
-        prevIndexes.push unique
-        return unique
-    else
-        return @getUnique()
 
 Union::events = () ->
     self = @
-    evt = App.Util.Events
+    evt = App.Util.Events # localize the events object
 
+    # set up our tick event: used to set positon of the nodes and links
     @force.on "tick", () ->
             self.link
                 .attr("x1", (d) -> return d.source.x )
@@ -90,10 +86,12 @@ Union::events = () ->
                 .attr("cx", (d) -> return d.x )
                 .attr("cy", (d) -> return d.y )
 
+    # handle the click event for the auto button
     $('.auto').on 'click', (e) ->
             self.auto()
             e.preventDefault()
 
+    # handle the click event for the join button
     $('.join').on 'click', (e) ->
             selector1 = parseInt( $( '#num1' ).val(), 10 )
             selector2 = parseInt( $( '#num2' ).val(), 10 )
@@ -102,11 +100,24 @@ Union::events = () ->
             self.union(  node1,  node2 )
             e.preventDefault()
 
+    # handle a successful join event
     evt.on 'successful:join', () ->
         $('#joins').find('span').text ++self.joins
 
+    # handle an unsuccessful join event
     evt.on 'unsuccessful:join', () ->
         $('#attempted-joins').find('span').text ++self.attemptedJoins
+
+Union::getUnique = () ->
+    prevIndexes = []
+
+    unique = Math.floor( Math.random() * ( @data.length + 1 ) )
+
+    unless _.indexOf( prevIndexes, unique ) > 0
+        prevIndexes.push unique
+        return unique
+    else
+        return @getUnique()
 
 Union::root = ( node ) ->
     self = @
@@ -194,13 +205,13 @@ Union::uniqueUnion = () ->
 Union::auto = () ->
     self = @
     loops = Math.floor( Math.random() * @data.length )
-    loopID = 0
+    clearInterval( @loopID )
 
-    loopID = setInterval ->
+    @loopID = setInterval ->
         self.uniqueUnion()
         loops--
         if loops == 0
-            clearInterval( loopID )
+            clearInterval( self.loopID )
     , 200
 
 
